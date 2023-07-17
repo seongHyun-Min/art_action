@@ -1,6 +1,7 @@
 package com.example.artaction.domain.entity;
 
 
+import com.example.artaction.contant.CategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,9 +33,15 @@ public class ArtWork {
     @Column(name = "art_work_image")
     private String image;
 
+    @Column(name = "art_category")
+    @Enumerated(EnumType.STRING)
+    private CategoryType category;
+
     //유저와 대다일 관계 설정
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+
 
 }
