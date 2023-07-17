@@ -46,6 +46,7 @@ public class UserService {
                 .email(requestDto.getEmail() != null ? requestDto.getEmail() : user.getEmail())
                 .name(requestDto.getUserName() != null ? requestDto.getUserName() : user.getName())
                 .password(requestDto.getPassword() != null ? requestDto.getPassword() : user.getPassword())
+                .userType(UserType.fromValue(requestDto.getUserType()))
                 .build();
 
         try {
