@@ -1,4 +1,4 @@
-package com.example.artaction.repository;
+package com.example.artaction.domain.repository;
 
 import com.example.artaction.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
