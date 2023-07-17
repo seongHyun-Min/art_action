@@ -2,7 +2,8 @@ package com.example.artaction.controller;
 
 
 import com.example.artaction.domain.entity.User;
-import com.example.artaction.dto.user.UserRequestDto;
+import com.example.artaction.dto.user.CreateUserRequestDto;
+import com.example.artaction.dto.user.UpdateUserRequestDto;
 import com.example.artaction.dto.user.UserResponseDto;
 import com.example.artaction.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<Long> createUser(@Valid @RequestBody UserRequestDto requestDto) {
+    public ResponseEntity<Long> createUser(@Valid @RequestBody CreateUserRequestDto requestDto) {
         User saveUser = userService.save(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saveUser.getId());
@@ -29,7 +30,7 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<Long> updateUser(
             @PathVariable Long userId,
-            @Valid @RequestBody UserRequestDto requestDto) {
+            @Valid @RequestBody UpdateUserRequestDto requestDto) {
         User updateUser = userService.update(userId, requestDto);
 
         return ResponseEntity.ok((updateUser.getId()));

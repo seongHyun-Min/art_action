@@ -3,7 +3,8 @@ package com.example.artaction.service;
 
 import com.example.artaction.contant.UserType;
 import com.example.artaction.domain.entity.User;
-import com.example.artaction.dto.user.UserRequestDto;
+import com.example.artaction.dto.user.CreateUserRequestDto;
+import com.example.artaction.dto.user.UpdateUserRequestDto;
 import com.example.artaction.exception.user.NotFoundUserException;
 import com.example.artaction.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User save(UserRequestDto requestDto) {
+    public User save(CreateUserRequestDto requestDto) {
         User user = User.builder()
                 .name(requestDto.getUserName())
                 .email(requestDto.getEmail())
@@ -37,7 +38,7 @@ public class UserService {
     }
 
     @Transactional
-    public User update(Long userId, UserRequestDto requestDto) {
+    public User update(Long userId, UpdateUserRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
 
