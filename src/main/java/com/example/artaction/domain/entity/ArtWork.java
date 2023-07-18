@@ -42,6 +42,4 @@ public class ArtWork {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-
 }
