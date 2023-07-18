@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequestDto {
+public class CreateUserRequestDto {
     @NotNull
     private String userName;
 
