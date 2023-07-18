@@ -75,6 +75,7 @@ public class ArtWorkService {
 
 
         ArtWork UpdateArtWork = ArtWork.builder()
+                .id(artWork.getId())
                 .user(findUser)
                 .name(requestDto.getName() != null ? requestDto.getName() : artWork.getName())
                 .description(requestDto.getDescription() != null ? requestDto.getDescription() :
