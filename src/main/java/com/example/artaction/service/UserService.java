@@ -60,13 +60,11 @@ public class UserService {
 
     @Transactional
     public void delete(Long userId) {
-        Optional<User> findUser = userRepository.findById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
 
-        if (findUser.isPresent()) {
-            userRepository.delete(findUser.get());
-        } else {
-            throw new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다");
-        }
+        userRepository.delete(user);
+
     }
 
     @Transactional(readOnly = true)
