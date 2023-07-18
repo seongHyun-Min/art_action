@@ -54,7 +54,7 @@ public class UserService {
         try {
             return userRepository.save(updatedUser);
         } catch (NotFoundUserException e) {
-            throw new NotFoundUserException("유저 업데이트가 실패 하였습니다");
+            throw new NotSaveUserException("유저 업데이트가 실패 하였습니다");
         }
     }
 
