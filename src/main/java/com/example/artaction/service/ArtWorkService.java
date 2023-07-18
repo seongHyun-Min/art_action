@@ -7,6 +7,7 @@ import com.example.artaction.domain.entity.User;
 import com.example.artaction.domain.repository.ArtWorkRepository;
 import com.example.artaction.domain.repository.UserRepository;
 import com.example.artaction.dto.artwork.PostArtWorkRequestDto;
+import com.example.artaction.exception.artwork.NotFoundArtWorkException;
 import com.example.artaction.exception.artwork.NotSaveArtWorkException;
 import com.example.artaction.exception.user.NotAuthorizedUserException;
 import com.example.artaction.exception.user.NotFoundUserException;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Slf4j
@@ -41,8 +44,25 @@ public class ArtWorkService {
 
         try {
             return artWorkRepository.save(artWork);
-        } catch (NotSaveArtWorkException e){
+        } catch (NotSaveArtWorkException e) {
             throw new NotSaveArtWorkException("물건 등록에 실패하였습니다");
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<ArtWork> findByCategory(Integer categoryValue) {
+        return artWorkRepository.findByCategory(CategoryType.fromValue(categoryValue))
+                .orElseThrow(() -> new NotFoundArtWorkException("조회 데이터(예술품)가 없습니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ArtWork> findByUser(Long userId) {
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
+
+        return artWorkRepository.findByUser(findUser)
+                .orElseThrow(() -> new NotFoundArtWorkException("조회 데이터(예술품)가 없습니다."));
+    }
+
+
 }
