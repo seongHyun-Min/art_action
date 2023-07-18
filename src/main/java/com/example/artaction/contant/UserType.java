@@ -24,6 +24,10 @@ public enum UserType {
         }
         throw new IllegalArgumentException("유효하지 않은 값입니다.");
     }
+
+    public boolean isSeller() {
+        return this == SELLER;
+    }
 }
     
 

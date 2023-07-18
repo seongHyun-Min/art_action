@@ -7,6 +7,7 @@ import com.example.artaction.dto.user.CreateUserRequestDto;
 import com.example.artaction.dto.user.UpdateUserRequestDto;
 import com.example.artaction.exception.user.NotFoundUserException;
 import com.example.artaction.domain.repository.UserRepository;
+import com.example.artaction.exception.user.NotSaveUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,8 @@ public class UserService {
 
         try {
             return userRepository.save(user);
-        } catch (NotFoundUserException e) {
-            throw new NotFoundUserException("유저 생성이 실패 하였습니다");
+        } catch (NotSaveUserException e) {
+            throw new NotSaveUserException("유저 생성이 실패 하였습니다");
         }
     }
 
