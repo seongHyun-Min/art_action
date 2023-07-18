@@ -28,8 +28,8 @@ public class ArtWorkService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ArtWork post(Long userId, PostArtWorkRequestDto requestDto) {
-        User findUser = userRepository.findById(userId)
+    public ArtWork post(PostArtWorkRequestDto requestDto) {
+        User findUser = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
 
         if (!findUser.getUserType().isSeller()) {
@@ -66,11 +66,11 @@ public class ArtWorkService {
     }
 
     @Transactional
-    public ArtWork update(Long userId, Long artWorkId, UpdateArtWorkRequestDto requestDto) {
-        User findUser = userRepository.findById(userId)
+    public ArtWork update(Long artWorkId, UpdateArtWorkRequestDto requestDto) {
+        User findUser = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
 
-        ArtWork artWork = artWorkRepository.findByIdAndUserId(userId, artWorkId)
+        ArtWork artWork = artWorkRepository.findByIdAndUserId(requestDto.getUserId(), artWorkId)
                 .orElseThrow(() -> new NotFoundArtWorkException("상품에 접근 권한이 없거나 아이디와 일치하는 물건을 찾을 수 없습니다"));
 
 

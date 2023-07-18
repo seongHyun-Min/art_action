@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class PostArtWorkRequestDto {
     @NotNull
+    private Long userId;
+    @NotNull
     private String name;
 
     private String description;
