@@ -10,6 +10,7 @@ import com.example.artaction.dto.bid.CreateBidRequestDto;
 import com.example.artaction.exception.action.NotFoundActionException;
 import com.example.artaction.exception.bid.InvalidBidPriceException;
 import com.example.artaction.exception.bid.NotFoundBidException;
+import com.example.artaction.exception.bid.NotSaveBidException;
 import com.example.artaction.exception.user.NotAuthorizedUserException;
 import com.example.artaction.exception.user.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,23 +34,42 @@ public class BidService {
     @Transactional
     public Bid create(CreateBidRequestDto requestDto) {
         User user = findUserById(requestDto.getUserId());
-        if(!user.getUserType().isSeller()){
+        if (!user.getUserType().isSeller()) {
             throw new NotAuthorizedUserException("구매자 권한이 없습니다");
         }
 
         Action action = findActionById(requestDto.getActionId());
-
         long bidPrice = requestDto.getPrice();
         validateBidPrice(action, bidPrice);
 
-        Bid bid = Bid.builder()
-                .action(action)
-                .user(user)
-                .price(bidPrice)
-                .bidTime(LocalDateTime.now())
-                .build();
+        Optional<Bid> existedBid = bidRepository.findByActionAndUser(action, user);
 
-        return bidRepository.save(bid);
+        if (existedBid.isPresent()) {
+            Bid beforeBid = Bid.builder()
+                    .id(existedBid.get().getId())
+                    .action(action)
+                    .user(user)
+                    .price(bidPrice)
+                    .bidTime(LocalDateTime.now())
+                    .build();
+            try {
+                return bidRepository.save(beforeBid);
+            } catch (NotSaveBidException e) {
+                throw new NotSaveBidException("입찰 갱신에 실패 하였습니다");
+            }
+        } else {
+            Bid newBid = Bid.builder()
+                    .action(action)
+                    .user(user)
+                    .price(bidPrice)
+                    .bidTime(LocalDateTime.now())
+                    .build();
+            try {
+                return bidRepository.save(newBid);
+            } catch (NotSaveBidException e) {
+                throw new NotSaveBidException("입찰 등록에 실패 하였습니다");
+            }
+        }
     }
 
     @Transactional(readOnly = true)

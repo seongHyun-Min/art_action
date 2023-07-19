@@ -15,4 +15,6 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     Optional<List<Bid>> findByUser(User user);
     @Query("SELECT b FROM Bid b WHERE b.action = :action ORDER BY b.bidTime DESC")
     Optional<List<Bid>> findTop5ByActionOrderByBidTimeDesc(@Param("action") Action action);
+
+    Optional<Bid> findByActionAndUser(Action action, User user);
 }
