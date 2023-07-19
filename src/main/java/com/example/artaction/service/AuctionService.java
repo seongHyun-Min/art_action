@@ -3,17 +3,14 @@ package com.example.artaction.service;
 import com.example.artaction.contant.ActionStatus;
 import com.example.artaction.domain.entity.Auction;
 import com.example.artaction.domain.entity.ArtWork;
-import com.example.artaction.domain.entity.User;
 import com.example.artaction.domain.repository.AuctionRepository;
 import com.example.artaction.domain.repository.ArtWorkRepository;
 import com.example.artaction.domain.repository.BidRepository;
-import com.example.artaction.domain.repository.UserRepository;
 import com.example.artaction.dto.auction.PostAuctionRequestDto;
 import com.example.artaction.exception.auction.NotFoundAuctionException;
 import com.example.artaction.exception.auction.NotSaveAuctionException;
 import com.example.artaction.exception.artwork.NotFoundArtWorkException;
 import com.example.artaction.exception.artwork.NotSaveArtWorkException;
-import com.example.artaction.exception.user.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,7 +28,6 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final ArtWorkRepository artWorkRepository;
     private final BidRepository bidRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public Auction post(PostAuctionRequestDto requestDto) {
@@ -94,16 +90,16 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Auction> findByUser(Long userId) {
-        User user = findUserById(userId);
-        return auctionRepository.findByUser(user)
+    public List<Auction> findByArtWork(Long artWorkId) {
+        ArtWork artWork = findByArtWorkId(artWorkId);
+        return auctionRepository.findByArtWork(artWork)
                 .orElseThrow(() -> new NotFoundAuctionException("옥션 등록 기록이 존재하지 않습니다"));
     }
 
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
+    private ArtWork findByArtWorkId(Long artWorkId) {
+        return artWorkRepository.findById(artWorkId)
+                .orElseThrow(() -> new NotFoundArtWorkException("아이디와 일치하는 물품을 찾을 수 없습니다"));
     }
 
     private ArtWork findArtWorkById(Long artWorkId) {

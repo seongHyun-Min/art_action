@@ -28,9 +28,9 @@ public class AuctionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(auction.getId());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<AuctionResponseDtoList> getAuctionByUserId(@PathVariable Long userId) {
-        List<Auction> byUser = auctionService.findByUser(userId);
+    @GetMapping("/artwork/{artWorkId}")
+    public ResponseEntity<AuctionResponseDtoList> getAuctionByArtWorkId(@PathVariable Long artWorkId) {
+        List<Auction> byUser = auctionService.findByArtWork(artWorkId);
 
         List<AuctionResponseDto> responseDtoList = convertResponseDtoList(byUser);
 
