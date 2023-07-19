@@ -41,4 +41,7 @@ public class Action {
     @Enumerated(EnumType.STRING)
     private ActionStatus status;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "art_work_id")
+    private ArtWork artWork;
 }
