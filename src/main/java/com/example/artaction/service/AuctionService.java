@@ -90,7 +90,7 @@ public class AuctionService {
     }
 
     @Transactional(readOnly = true)
-    public List<Auction> findByUser(Long artWorkId) {
+    public List<Auction> findByArtWork(Long artWorkId) {
         ArtWork artWork = findByArtWorkId(artWorkId);
         return auctionRepository.findByArtWork(artWork)
                 .orElseThrow(() -> new NotFoundAuctionException("옥션 등록 기록이 존재하지 않습니다"));
