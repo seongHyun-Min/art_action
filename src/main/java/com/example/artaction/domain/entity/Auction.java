@@ -19,27 +19,27 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "actions")
-public class Action {
+@Table(name = "auctions")
+public class Auction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "action_id")
+    @Column(name = "auction_id")
     private Long id;
 
-    @Column(name = "actiond_starting_price")
+    @Column(name = "auction_starting_price")
     private long startingPrice;
 
-    @Column(name = "actions_current_price")
-    private long CurrentPrice;
+    @Column(name = "auction_current_price")
+    private long currentPrice;
 
-    @Column(name = "actions_start_time")
+    @Column(name = "auction_start_time")
     private LocalDateTime startTime;
 
-    @Column(name = "actions_end_time")
+    @Column(name = "auction_end_time")
     private LocalDateTime endTime;
 
-    @Column(name = "action_status")
+    @Column(name = "auction_status")
     @Enumerated(EnumType.STRING)
     private ActionStatus status;
 
@@ -47,6 +47,6 @@ public class Action {
     @JoinColumn(name = "art_work_id")
     private ArtWork artWork;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "action")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "auction")
     private List<Bid> bids = new ArrayList<>();
 }

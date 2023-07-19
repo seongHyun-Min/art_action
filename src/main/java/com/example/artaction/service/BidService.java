@@ -1,13 +1,13 @@
 package com.example.artaction.service;
 
-import com.example.artaction.domain.entity.Action;
+import com.example.artaction.domain.entity.Auction;
 import com.example.artaction.domain.entity.Bid;
 import com.example.artaction.domain.entity.User;
-import com.example.artaction.domain.repository.ActionRepository;
+import com.example.artaction.domain.repository.AuctionRepository;
 import com.example.artaction.domain.repository.BidRepository;
 import com.example.artaction.domain.repository.UserRepository;
 import com.example.artaction.dto.bid.CreateBidRequestDto;
-import com.example.artaction.exception.action.NotFoundActionException;
+import com.example.artaction.exception.auction.NotFoundAuctionException;
 import com.example.artaction.exception.bid.InvalidBidPriceException;
 import com.example.artaction.exception.bid.NotFoundBidException;
 import com.example.artaction.exception.bid.NotSaveBidException;
@@ -28,7 +28,7 @@ import java.util.Optional;
 public class BidService {
 
     private final BidRepository bidRepository;
-    private final ActionRepository actionRepository;
+    private final AuctionRepository auctionRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -38,16 +38,16 @@ public class BidService {
             throw new NotAuthorizedUserException("구매자 권한이 없습니다");
         }
 
-        Action action = findActionById(requestDto.getActionId());
+        Auction auction = findActionById(requestDto.getActionId());
         long bidPrice = requestDto.getPrice();
-        validateBidPrice(action, bidPrice);
+        validateBidPrice(auction, bidPrice);
 
-        Optional<Bid> existedBid = bidRepository.findByActionAndUser(action, user);
+        Optional<Bid> existedBid = bidRepository.findByAuctionAndUser(auction, user);
 
         if (existedBid.isPresent()) {
             Bid beforeBid = Bid.builder()
                     .id(existedBid.get().getId())
-                    .action(action)
+                    .auction(auction)
                     .user(user)
                     .price(bidPrice)
                     .bidTime(LocalDateTime.now())
@@ -59,7 +59,7 @@ public class BidService {
             }
         } else {
             Bid newBid = Bid.builder()
-                    .action(action)
+                    .auction(auction)
                     .user(user)
                     .price(bidPrice)
                     .bidTime(LocalDateTime.now())
@@ -81,8 +81,8 @@ public class BidService {
 
     @Transactional(readOnly = true)
     public List<Bid> findTop5ByAction(Long actionId) {
-        Action action = findActionById(actionId);
-        return bidRepository.findTop5ByActionOrderByBidTimeDesc(action)
+        Auction auction = findActionById(actionId);
+        return bidRepository.findTop5ByActionOrderByBidTimeDesc(auction)
                 .orElseThrow(() -> new NotFoundBidException("입찰 내역이 존재하지 않습니다"));
     }
 
@@ -91,16 +91,16 @@ public class BidService {
                 .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
     }
 
-    private Action findActionById(Long actionId) {
-        return actionRepository.findById(actionId)
-                .orElseThrow(() -> new NotFoundActionException("아이디와 일치하는 경매를 찾을 수 없습니다"));
+    private Auction findActionById(Long actionId) {
+        return auctionRepository.findById(actionId)
+                .orElseThrow(() -> new NotFoundAuctionException("아이디와 일치하는 경매를 찾을 수 없습니다"));
     }
 
-    private void validateBidPrice(Action action, long bidPrice) {
-        if (bidPrice <= action.getStartingPrice()) {
+    private void validateBidPrice(Auction auction, long bidPrice) {
+        if (bidPrice <= auction.getStartingPrice()) {
             throw new InvalidBidPriceException("입찰금액이 시작 금액보다 낮습니다.");
         }
-        if (bidPrice <= action.getCurrentPrice()) {
+        if (bidPrice <= auction.getCurrentPrice()) {
             throw new IllegalArgumentException("입찰금액이 현재 가격보다 낮습니다");
         }
     }

@@ -30,8 +30,8 @@ public class Bid {
     private LocalDateTime bidTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "art_work_id")
-    private Action action;
+    @JoinColumn(name = "auction_id")
+    private Auction auction;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

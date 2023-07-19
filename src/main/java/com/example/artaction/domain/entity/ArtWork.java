@@ -43,5 +43,5 @@ public class ArtWork {
     private User user;
 
     @OneToOne(mappedBy = "artWork", fetch = FetchType.LAZY)
-    private Action action;
+    private Auction auction;
 }
