@@ -23,7 +23,7 @@ public class ArtWorkController {
     private final ArtWorkService artWorkService;
 
     @PostMapping()
-    public ResponseEntity<Long> PostArtWork(@Valid @RequestBody PostArtWorkRequestDto requestDto) {
+    public ResponseEntity<Long> postArtWork(@Valid @RequestBody PostArtWorkRequestDto requestDto) {
         ArtWork postArtWork = artWorkService.post(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postArtWork.getId());

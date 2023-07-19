@@ -56,8 +56,8 @@ public class BidController {
                 .map(bid -> UserBidResponseDto.builder()
                         .price(bid.getPrice())
                         .bidTime(bid.getBidTime())
-                        .actionId(bid.getAction().getId())
-                        .actionStatus(bid.getAction().getStatus())
+                        .actionId(bid.getAuction().getId())
+                        .actionStatus(bid.getAuction().getStatus())
                         .build())
                 .collect(Collectors.toList());
     }

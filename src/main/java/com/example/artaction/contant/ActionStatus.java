@@ -11,7 +11,9 @@ import java.util.Objects;
 public enum ActionStatus {
     PREPARE(0, "준비"),
     START(1, "시작"),
-    EXIT(2, "종료");
+    END(2, "종료"),
+    FAIL(3, "입찰 실패");
+
 
     private final Integer value;
 
