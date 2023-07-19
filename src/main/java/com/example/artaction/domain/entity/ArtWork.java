@@ -42,4 +42,6 @@ public class ArtWork {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne(mappedBy = "artWork", fetch = FetchType.LAZY)
+    private Action action;
 }
