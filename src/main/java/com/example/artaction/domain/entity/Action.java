@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Getter
@@ -44,4 +46,7 @@ public class Action {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "art_work_id")
     private ArtWork artWork;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "action")
+    private List<Bid> bids = new ArrayList<>();
 }
