@@ -12,9 +12,7 @@ import java.util.Optional;
 
 public interface BidRepository extends JpaRepository<Bid, Long> {
     Optional<Bid> findById(Long id);
-    Optional<List<Bid>> findByAction(Action action);
     Optional<List<Bid>> findByUser(User user);
-
     @Query("SELECT b FROM Bid b WHERE b.action = :action ORDER BY b.bidTime DESC")
-    List<Bid> findTop5ByActionOrderByBidTimeDesc(@Param("action") Action action);
+    Optional<List<Bid>> findTop5ByActionOrderByBidTimeDesc(@Param("action") Action action);
 }
