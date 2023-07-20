@@ -70,7 +70,7 @@ public class ArtWorkService {
         User findUser = userRepository.findById(requestDto.getUserId())
                 .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
 
-        ArtWork artWork = artWorkRepository.findByIdAndUserId(requestDto.getUserId(), artWorkId)
+            ArtWork artWork = artWorkRepository.findByIdAndUserId(artWorkId, requestDto.getUserId())
                 .orElseThrow(() -> new NotFoundArtWorkException("상품에 접근 권한이 없거나 아이디와 일치하는 물건을 찾을 수 없습니다"));
 
 
