@@ -2,7 +2,6 @@ package com.example.artaction.dto.bid;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -12,9 +11,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CreateBidRequestDto {
     @NotNull
-    private Long ActionId;
+    private Long auctionId;
     @NotNull
     private Long userId;
-    @NotBlank
     private long price;
 }
