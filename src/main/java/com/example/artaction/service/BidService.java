@@ -34,11 +34,11 @@ public class BidService {
     @Transactional
     public Bid create(CreateBidRequestDto requestDto) {
         User user = findUserById(requestDto.getUserId());
-        if (!user.getUserType().isSeller()) {
+        if (!user.getUserType().isBuyer()) {
             throw new NotAuthorizedUserException("구매자 권한이 없습니다");
         }
 
-        Auction auction = findActionById(requestDto.getActionId());
+        Auction auction = findActionById(requestDto.getAuctionId());
         long bidPrice = requestDto.getPrice();
         validateBidPrice(auction, bidPrice);
 
