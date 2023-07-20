@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ActionBidResponseDto {
+public class AuctionBidResponseDto {
     private String userName;
 
     private long price;

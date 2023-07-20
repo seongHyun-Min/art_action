@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ActionBidResponseDtoList {
-    List<ActionBidResponseDto> bids;
+public class AuctionBidResponseDtoList {
+    List<AuctionBidResponseDto> bids;
 
 }
