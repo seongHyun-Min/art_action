@@ -40,13 +40,13 @@ public class BidController {
     }
 
     @GetMapping("/action/{actionId}")
-    public ResponseEntity<ActionBidResponseDtoList> getBidByActionId(@PathVariable Long actionId) {
+    public ResponseEntity<AuctionBidResponseDtoList> getBidByActionId(@PathVariable Long actionId) {
 
         List<Bid> byAction = bidService.findTop5ByAction(actionId);
 
-        List<ActionBidResponseDto> bidResponseDtoList = ActionConvertResponseDtoList(byAction);
+        List<AuctionBidResponseDto> bidResponseDtoList = ActionConvertResponseDtoList(byAction);
 
-        ActionBidResponseDtoList responseDtoList = new ActionBidResponseDtoList(bidResponseDtoList);
+        AuctionBidResponseDtoList responseDtoList = new AuctionBidResponseDtoList(bidResponseDtoList);
 
         return ResponseEntity.ok(responseDtoList);
     }
@@ -62,9 +62,9 @@ public class BidController {
                 .collect(Collectors.toList());
     }
 
-    private static List<ActionBidResponseDto> ActionConvertResponseDtoList(List<Bid> by) {
+    private static List<AuctionBidResponseDto> ActionConvertResponseDtoList(List<Bid> by) {
         return by.stream()
-                .map(bid -> ActionBidResponseDto.builder()
+                .map(bid -> AuctionBidResponseDto.builder()
                         .price(bid.getPrice())
                         .bidTime(bid.getBidTime())
                         .userName(bid.getUser().getName())
