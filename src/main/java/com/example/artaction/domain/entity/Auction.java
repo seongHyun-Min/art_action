@@ -1,7 +1,7 @@
 package com.example.artaction.domain.entity;
 
 
-import com.example.artaction.contant.ActionStatus;
+import com.example.artaction.contant.AuctionStatus;
 import com.example.artaction.dto.auction.AuctionResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +42,7 @@ public class Auction {
 
     @Column(name = "auction_status")
     @Enumerated(EnumType.STRING)
-    private ActionStatus status;
+    private AuctionStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "art_work_id")
@@ -55,7 +55,7 @@ public class Auction {
         return AuctionResponseDto.builder()
                 .itemName(artWork.getName())
                 .price(currentPrice)
-                .actionStatus(status)
+                .auctionStatus(status)
                 .build();
     }
 }

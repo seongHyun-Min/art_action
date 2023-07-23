@@ -1,7 +1,6 @@
 package com.example.artaction.controller;
 
 
-import com.example.artaction.domain.entity.Bid;
 import com.example.artaction.dto.bid.*;
 import com.example.artaction.service.BidService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bids")
@@ -21,54 +19,17 @@ public class BidController {
     private final BidService bidService;
 
     @PostMapping
-    public ResponseEntity<Long> CreateBid(@Valid @RequestBody CreateBidRequestDto requestDto) {
-        Bid bid = bidService.create(requestDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(bid.getId());
+    public ResponseEntity<Long> postBid(@Valid @RequestBody PostBidRequestDto requestDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(bidService.Post(requestDto));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<UserBidResponseDtoList> getBidByUserId(@PathVariable Long userId) {
-
-        List<Bid> byUser = bidService.findByUser(userId);
-
-        List<UserBidResponseDto> bidResponseDtoList = userConvertResponseDtoList(byUser);
-
-        UserBidResponseDtoList responseDtoList = new UserBidResponseDtoList(bidResponseDtoList);
-
-        return ResponseEntity.ok(responseDtoList);
+    public ResponseEntity<List<UserBidResponseDto>> getBidByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(bidService.findByUser(userId));
     }
 
-    @GetMapping("/action/{actionId}")
-    public ResponseEntity<AuctionBidResponseDtoList> getBidByActionId(@PathVariable Long actionId) {
-
-        List<Bid> byAction = bidService.findTop5ByAction(actionId);
-
-        List<AuctionBidResponseDto> bidResponseDtoList = ActionConvertResponseDtoList(byAction);
-
-        AuctionBidResponseDtoList responseDtoList = new AuctionBidResponseDtoList(bidResponseDtoList);
-
-        return ResponseEntity.ok(responseDtoList);
-    }
-
-    private static List<UserBidResponseDto> userConvertResponseDtoList(List<Bid> by) {
-        return by.stream()
-                .map(bid -> UserBidResponseDto.builder()
-                        .price(bid.getPrice())
-                        .bidTime(bid.getBidTime())
-                        .actionId(bid.getAuction().getId())
-                        .actionStatus(bid.getAuction().getStatus())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    private static List<AuctionBidResponseDto> ActionConvertResponseDtoList(List<Bid> by) {
-        return by.stream()
-                .map(bid -> AuctionBidResponseDto.builder()
-                        .price(bid.getPrice())
-                        .bidTime(bid.getBidTime())
-                        .userName(bid.getUser().getName())
-                        .build())
-                .collect(Collectors.toList());
+    @GetMapping("/auction/{auctionId}")
+    public ResponseEntity<List<AuctionBidResponseDto>> getBidByActionId(@PathVariable Long auctionId) {
+        return ResponseEntity.ok(bidService.findTop5ByAuction(auctionId));
     }
 }

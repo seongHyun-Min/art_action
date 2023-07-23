@@ -1,6 +1,6 @@
 package com.example.artaction.service;
 
-import com.example.artaction.contant.ActionStatus;
+import com.example.artaction.contant.AuctionStatus;
 import com.example.artaction.domain.entity.Auction;
 import com.example.artaction.domain.entity.ArtWork;
 import com.example.artaction.domain.repository.AuctionRepository;
@@ -52,26 +52,26 @@ public class AuctionService {
     @Scheduled(fixedRate = 3600000) // 1시간마다 실행 (3600000ms = 1시간)
     public void updateActionStatus() {
         LocalDateTime currentTime = LocalDateTime.now();
-        List<Auction> startAuctions = auctionRepository.findByStatusAndStartTimeAfter(ActionStatus.PREPARE,
+        List<Auction> startAuctions = auctionRepository.findByStatusAndStartTimeAfter(AuctionStatus.PREPARE,
                 currentTime);
-        List<Auction> endAuctions = auctionRepository.findByStatusAndEndTimeAfter(ActionStatus.START, currentTime);
+        List<Auction> endAuctions = auctionRepository.findByStatusAndEndTimeAfter(AuctionStatus.START, currentTime);
 
         for (Auction auction : startAuctions) {
-            Auction startAuction = getBuild(auction, ActionStatus.START, auction.getCurrentPrice());
+            Auction startAuction = getBuild(auction, AuctionStatus.START, auction.getCurrentPrice());
             auctionRepository.save(startAuction);
         }
 
         for (Auction auction : endAuctions) {
             Optional<Integer> maxPrice = bidRepository.findTop1ByAuctionOrderByPriceDesc(auction);
-            ActionStatus actionStatus = maxPrice.isPresent() ? ActionStatus.END : ActionStatus.FAIL;
+            AuctionStatus auctionStatus = maxPrice.isPresent() ? AuctionStatus.END : AuctionStatus.FAIL;
             long endPrice = maxPrice.orElse(0).longValue();
 
-            Auction endAuction = getBuild(auction, actionStatus, endPrice);
+            Auction endAuction = getBuild(auction, auctionStatus, endPrice);
             auctionRepository.save(endAuction);
         }
     }
 
-    private static Auction getBuild(Auction auction, ActionStatus status, long price) {
+    private static Auction getBuild(Auction auction, AuctionStatus status, long price) {
         return Auction.builder()
                 .artWork(auction.getArtWork())
                 .startTime(auction.getStartTime())
