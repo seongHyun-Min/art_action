@@ -1,5 +1,7 @@
 package com.example.artaction.dto.auction;
 
+import com.example.artaction.domain.entity.ArtWork;
+import com.example.artaction.domain.entity.Auction;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -34,6 +36,16 @@ public class PostAuctionRequestDto {
 
     public LocalDateTime getEndTime() {
         return LocalDateTime.parse(endDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public Auction toEntity(ArtWork artWork) {
+        return Auction.builder()
+                .startingPrice(startingPrice)
+                .currentPrice(startingPrice)
+                .startTime(getStartTime())
+                .endTime(getEndTime())
+                .artWork(artWork)
+                .build();
     }
 }
 
