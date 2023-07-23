@@ -2,6 +2,7 @@ package com.example.artaction.domain.entity;
 
 
 import com.example.artaction.contant.CategoryType;
+import com.example.artaction.dto.artwork.ArtWorkResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,4 +45,13 @@ public class ArtWork {
 
     @OneToOne(mappedBy = "artWork", fetch = FetchType.LAZY)
     private Auction auction;
+
+    public ArtWorkResponseDto from() {
+        return ArtWorkResponseDto.builder()
+                .name(name)
+                .description(description)
+                .image(image)
+                .categoryType(category)
+                .build();
+    }
 }

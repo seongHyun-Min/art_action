@@ -6,6 +6,7 @@ import com.example.artaction.domain.entity.ArtWork;
 import com.example.artaction.domain.entity.User;
 import com.example.artaction.domain.repository.ArtWorkRepository;
 import com.example.artaction.domain.repository.UserRepository;
+import com.example.artaction.dto.artwork.ArtWorkResponseDto;
 import com.example.artaction.dto.artwork.PostArtWorkRequestDto;
 import com.example.artaction.dto.artwork.UpdateArtWorkRequestDto;
 import com.example.artaction.exception.artwork.NotFoundArtWorkException;
@@ -28,75 +29,61 @@ public class ArtWorkService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ArtWork post(PostArtWorkRequestDto requestDto) {
-        User findUser = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
-
+    public Long post(PostArtWorkRequestDto requestDto) {
+        User findUser = getUser(requestDto.getUserId());
         if (!findUser.getUserType().isSeller()) {
             throw new NotAuthorizedUserException("판매자 권한이 없습니다");
         }
-        ArtWork artWork = ArtWork.builder()
-                .user(findUser)
-                .name(requestDto.getName())
-                .description(requestDto.getDescription())
-                .image(requestDto.getImage())
-                .category(CategoryType.fromValue(requestDto.getCategoryType()))
-                .build();
-
+        ArtWork artWork = requestDto.toEntity(findUser);
         try {
-            return artWorkRepository.save(artWork);
+            return artWorkRepository.save(artWork).getId();
         } catch (NotSaveArtWorkException e) {
-            throw new NotSaveArtWorkException("물건 등록에 실패 하였습니다");
+            throw new NotSaveArtWorkException("상품 등록에 실패 하였습니다");
         }
     }
 
     @Transactional(readOnly = true)
-    public List<ArtWork> findByCategory(Integer categoryValue) {
+    public List<ArtWorkResponseDto> findByCategory(Integer categoryValue) {
         return artWorkRepository.findByCategory(CategoryType.fromValue(categoryValue))
-                .orElseThrow(() -> new NotFoundArtWorkException("조회 데이터(예술품)가 없습니다."));
+                .stream()
+                .map(ArtWork::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ArtWork> findByUser(Long userId) {
-        User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
-
+    public List<ArtWorkResponseDto> findByUserId(Long userId) {
+        User findUser = getUser(userId);
         return artWorkRepository.findByUser(findUser)
-                .orElseThrow(() -> new NotFoundArtWorkException("조회 데이터(예술품)가 없습니다."));
+                .stream()
+                .map(ArtWork::from)
+                .toList();
     }
 
     @Transactional
-    public ArtWork update(Long artWorkId, UpdateArtWorkRequestDto requestDto) {
-        User findUser = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
-
-            ArtWork artWork = artWorkRepository.findByIdAndUserId(artWorkId, requestDto.getUserId())
-                .orElseThrow(() -> new NotFoundArtWorkException("상품에 접근 권한이 없거나 아이디와 일치하는 물건을 찾을 수 없습니다"));
-
-
-        ArtWork UpdateArtWork = ArtWork.builder()
-                .id(artWork.getId())
-                .user(findUser)
-                .name(requestDto.getName() != null ? requestDto.getName() : artWork.getName())
-                .description(requestDto.getDescription() != null ? requestDto.getDescription() :
-                        artWork.getDescription())
-                .image(requestDto.getImage() != null ? requestDto.getImage() : artWork.getImage())
-                .category(requestDto.getCategoryType() != null ?
-                        CategoryType.fromValue(requestDto.getCategoryType()) : artWork.getCategory())
-                .build();
-
+    public Long update(Long artWorkId, UpdateArtWorkRequestDto requestDto) {
+        ArtWork artWork = getArtWork(artWorkId);
+        ArtWork updateArtWork = requestDto.toEntity(artWork);
         try {
-            return artWorkRepository.save(UpdateArtWork);
+            return artWorkRepository.save(updateArtWork).getId();
         } catch (NotSaveArtWorkException e) {
             throw new NotSaveArtWorkException("물건 수정에 실패 하였습니다");
         }
     }
 
     @Transactional
-    public void delete(Long userId, Long artWorkId) {
-        ArtWork artWork = artWorkRepository.findByIdAndUserId(userId, artWorkId)
-                .orElseThrow(() -> new NotFoundArtWorkException("상품에 접근 권한이 없거나 아이디와 일치하는 물건을 찾을 수 없습니다"));
-
+    public void delete(Long artWorkId) {
+        ArtWork artWork = getArtWork(artWorkId);
         artWorkRepository.delete(artWork);
+    }
+
+    private ArtWork getArtWork(Long ArtWorkId) {
+        ArtWork artWork = artWorkRepository.findById(ArtWorkId)
+                .orElseThrow(() -> new NotFoundArtWorkException("아이디와 일치하는 상품을 찾을수 없습니다"));
+        return artWork;
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundUserException("아이디와 일치하는 회원을 찾을 수 없습니다"));
     }
 }
