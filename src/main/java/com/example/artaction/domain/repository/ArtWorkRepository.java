@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ArtWorkRepository extends JpaRepository<ArtWork, Long> {
-    Optional<List<ArtWork>> findByCategory(CategoryType category);
+    List<ArtWork> findByCategory(CategoryType category);
 
-    Optional<List<ArtWork>> findByUser(User user);
+    List<ArtWork> findByUser(User user);
 
     Optional<ArtWork> findByIdAndUserId(Long artworkId, Long userId);
 
