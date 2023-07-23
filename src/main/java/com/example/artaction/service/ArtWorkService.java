@@ -77,9 +77,8 @@ public class ArtWorkService {
     }
 
     private ArtWork getArtWork(Long ArtWorkId) {
-        ArtWork artWork = artWorkRepository.findById(ArtWorkId)
+        return artWorkRepository.findById(ArtWorkId)
                 .orElseThrow(() -> new NotFoundArtWorkException("아이디와 일치하는 상품을 찾을수 없습니다"));
-        return artWork;
     }
 
     private User getUser(Long userId) {
