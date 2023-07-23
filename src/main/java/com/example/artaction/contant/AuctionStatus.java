@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Getter
-public enum ActionStatus {
+public enum AuctionStatus {
     PREPARE(0, "준비"),
     START(1, "시작"),
     END(2, "종료"),
@@ -19,13 +19,17 @@ public enum ActionStatus {
 
     private final String typeName;
 
-    public static ActionStatus fromValue(Integer value) {
-        for (ActionStatus actionStatus : ActionStatus.values()) {
-            if (Objects.equals(actionStatus.value, value)) {
-                return actionStatus;
+    public static AuctionStatus fromValue(Integer value) {
+        for (AuctionStatus auctionStatus : AuctionStatus.values()) {
+            if (Objects.equals(auctionStatus.value, value)) {
+                return auctionStatus;
             }
         }
         throw new IllegalArgumentException("유효하지 않은 값입니다");
+    }
+
+    public boolean isStart() {
+        return this == START;
     }
 
 

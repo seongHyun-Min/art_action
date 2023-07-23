@@ -1,6 +1,6 @@
 package com.example.artaction.domain.repository;
 
-import com.example.artaction.contant.ActionStatus;
+import com.example.artaction.contant.AuctionStatus;
 import com.example.artaction.domain.entity.ArtWork;
 import com.example.artaction.domain.entity.Auction;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +14,8 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 
     List<Auction> findByArtWork(ArtWork artWork);
 
-    List<Auction> findByStatusAndStartTimeAfter(ActionStatus status, LocalDateTime StartTime);
+    List<Auction> findByStatusAndStartTimeAfter(AuctionStatus status, LocalDateTime StartTime);
 
-    List<Auction> findByStatusAndEndTimeAfter(ActionStatus status, LocalDateTime EndTime);
+    List<Auction> findByStatusAndEndTimeAfter(AuctionStatus status, LocalDateTime EndTime);
 
 }

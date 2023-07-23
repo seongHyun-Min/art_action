@@ -1,6 +1,6 @@
 package com.example.artaction.dto.bid;
 
-import com.example.artaction.contant.ActionStatus;
+import com.example.artaction.contant.AuctionStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ public class UserBidResponseDto {
 
     private LocalDateTime bidTime;
 
-    private Long actionId;
+    private Long auctionId;
 
-    private ActionStatus actionStatus;
+    private AuctionStatus auctionStatus;
 }
