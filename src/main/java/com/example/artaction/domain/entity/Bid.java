@@ -1,11 +1,14 @@
 package com.example.artaction.domain.entity;
 
 
+import com.example.artaction.dto.bid.AuctionBidResponseDto;
+import com.example.artaction.dto.bid.UserBidResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -36,4 +39,21 @@ public class Bid {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public AuctionBidResponseDto fromAuction() {
+        return AuctionBidResponseDto.builder()
+                .userName(user.getName())
+                .price(price)
+                .bidTime(bidTime)
+                .build();
+    }
+
+    public UserBidResponseDto fromUser() {
+        return UserBidResponseDto.builder()
+                .price(price)
+                .bidTime(bidTime)
+                .auctionId(auction.getId())
+                .auctionStatus(auction.getStatus())
+                .build();
+    }
 }
