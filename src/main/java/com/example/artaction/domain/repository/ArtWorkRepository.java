@@ -13,6 +13,5 @@ public interface ArtWorkRepository extends JpaRepository<ArtWork, Long> {
 
     List<ArtWork> findByUser(User user);
 
-    Optional<ArtWork> findByIdAndUserId(Long artworkId, Long userId);
-
+    Optional<ArtWork> findById(Long userId);
 }
