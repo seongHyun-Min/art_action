@@ -44,7 +44,6 @@ public class ArtWorkController {
         return ResponseEntity.ok(byCategory);
     }
 
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ArtWorkResponseDto>> getArtWorkByUserId(@PathVariable Long userId) {
         List<ArtWorkResponseDto> byUserId = artWorkService.findByUserId(userId);
