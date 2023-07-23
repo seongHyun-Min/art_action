@@ -1,5 +1,7 @@
 package com.example.artaction.dto.user;
 
+import com.example.artaction.contant.UserType;
+import com.example.artaction.domain.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -22,4 +24,12 @@ public class CreateUserRequestDto {
     @NotNull
     private Integer userType;
 
+    public User toEntity() {
+        return User.builder()
+                .name(userName)
+                .email(email)
+                .password(password)
+                .userType(UserType.fromValue(userType))
+                .build();
+    }
 }

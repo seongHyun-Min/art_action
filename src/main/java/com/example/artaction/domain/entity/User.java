@@ -1,6 +1,7 @@
 package com.example.artaction.domain.entity;
 
 import com.example.artaction.contant.UserType;
+import com.example.artaction.dto.user.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,4 +45,12 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Bid> bids = new ArrayList<>();
+
+    public UserResponseDto from() {
+        return UserResponseDto.builder()
+                .name(name)
+                .email(email)
+                .userType(userType)
+                .build();
+    }
 }
