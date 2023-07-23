@@ -1,5 +1,6 @@
 package com.example.artaction.dto.auction;
 
+import com.example.artaction.contant.ActionStatus;
 import com.example.artaction.domain.entity.ArtWork;
 import com.example.artaction.domain.entity.Auction;
 import lombok.*;
@@ -45,6 +46,7 @@ public class PostAuctionRequestDto {
                 .startTime(getStartTime())
                 .endTime(getEndTime())
                 .artWork(artWork)
+                .status(ActionStatus.PREPARE)
                 .build();
     }
 }
