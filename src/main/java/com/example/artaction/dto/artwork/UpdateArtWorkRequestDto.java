@@ -2,7 +2,6 @@ package com.example.artaction.dto.artwork;
 
 import com.example.artaction.contant.CategoryType;
 import com.example.artaction.domain.entity.ArtWork;
-import com.example.artaction.domain.entity.User;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -26,6 +25,7 @@ public class UpdateArtWorkRequestDto {
 
     public ArtWork toEntity(ArtWork artWork) {
         return ArtWork.builder()
+                .id(artWork.getId())
                 .name(this.getName() != null ? this.getName() : artWork.getName())
                 .description(this.getDescription() != null ? this.getDescription() : artWork.getDescription())
                 .image(this.getImage() != null ? this.getImage() : artWork.getImage())
