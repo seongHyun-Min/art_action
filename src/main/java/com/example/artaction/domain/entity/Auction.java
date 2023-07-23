@@ -2,6 +2,7 @@ package com.example.artaction.domain.entity;
 
 
 import com.example.artaction.contant.ActionStatus;
+import com.example.artaction.dto.auction.AuctionResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,4 +50,12 @@ public class Auction {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "auction")
     private List<Bid> bids = new ArrayList<>();
+
+    public AuctionResponseDto from() {
+        return AuctionResponseDto.builder()
+                .itemName(artWork.getName())
+                .price(currentPrice)
+                .actionStatus(status)
+                .build();
+    }
 }
