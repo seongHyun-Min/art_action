@@ -26,6 +26,7 @@ public class UpdateArtWorkRequestDto {
 
     public ArtWork toEntity(ArtWork artWork) {
         return ArtWork.builder()
+                .id(artWork.getId())
                 .name(this.getName() != null ? this.getName() : artWork.getName())
                 .description(this.getDescription() != null ? this.getDescription() : artWork.getDescription())
                 .image(this.getImage() != null ? this.getImage() : artWork.getImage())
