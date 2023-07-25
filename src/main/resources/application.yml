@@ -5,5 +5,5 @@ server:
 spring:
   profiles:
     group:
-      "dev": "dev, datasource"
+      "dev": "dev, datasource, redis"
       "prod": "prod, datasource"

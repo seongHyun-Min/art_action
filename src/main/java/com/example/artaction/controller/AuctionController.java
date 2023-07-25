@@ -23,6 +23,11 @@ public class AuctionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(auctionService.post(requestDto));
     }
 
+    @GetMapping("/{auctionId}")
+    public ResponseEntity<AuctionResponseDto> getAuction(@PathVariable Long auctionId) {
+        return ResponseEntity.ok(auctionService.findById(auctionId));
+    }
+
     @GetMapping("/artwork/{artWorkId}")
     public ResponseEntity<List<AuctionResponseDto>> getAuctionByArtWorkId(@PathVariable Long artWorkId) {
         List<AuctionResponseDto> byArtWork = auctionService.findByArtWork(artWorkId);
