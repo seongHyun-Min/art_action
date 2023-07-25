@@ -51,7 +51,7 @@ public class Auction {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "auction")
     private List<Bid> bids = new ArrayList<>();
 
-    public AuctionResponseDto from() {
+    public AuctionResponseDto from(long currentPrice) {
         return AuctionResponseDto.builder()
                 .itemName(artWork.getName())
                 .price(currentPrice)
