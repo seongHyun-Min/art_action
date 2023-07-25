@@ -16,6 +16,7 @@ import com.example.artaction.exception.user.NotAuthorizedUserException;
 import com.example.artaction.exception.user.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,14 +48,18 @@ public class BidService {
         if (existedBid.isPresent()) {
             Bid UpdateBid = requestDto.toUpdateEntity(existedBid.get().getId(), user, auction);
             try {
-                return bidRepository.save(UpdateBid).getId();
+                Long id = bidRepository.save(UpdateBid).getId();
+                updateBidPriceToRedis(auction.getId(), requestDto.getPrice());
+                return id;
             } catch (NotSaveBidException e) {
                 throw new NotSaveBidException("입찰 갱신에 실패 하였습니다");
             }
         } else {
             Bid bid = requestDto.toEntity(user, auction);
             try {
-                return bidRepository.save(bid).getId();
+                Long id = bidRepository.save(bid).getId();
+                updateBidPriceToRedis(auction.getId(), requestDto.getPrice());
+                return id;
             } catch (NotSaveBidException e) {
                 throw new NotSaveBidException("입찰 등록에 실패 하였습니다");
             }
@@ -89,6 +94,7 @@ public class BidService {
                 .orElseThrow(() -> new NotFoundAuctionException("아이디와 일치하는 경매를 찾을 수 없습니다"));
     }
 
+
     private void validateBidPrice(Auction auction, long bidPrice) {
         if (!auction.getStatus().isStart()) {
             throw new InvalidBidException("경매가 진행중이 아닙니다.");
@@ -99,5 +105,11 @@ public class BidService {
         if (bidPrice <= auction.getCurrentPrice()) {
             throw new InvalidBidException("입찰금액이 현재 가격보다 낮습니다");
         }
+    }
+
+    @CachePut(key = "#auctionId", value = "bidPrice")
+    public long updateBidPriceToRedis(Long auctionId, long price) {
+        log.info("Updating bid price for auctionId {} to {}", auctionId, price);
+        return price;
     }
 }
