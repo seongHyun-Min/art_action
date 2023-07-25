@@ -8,11 +8,13 @@ import com.example.artaction.domain.repository.ArtWorkRepository;
 import com.example.artaction.domain.repository.BidRepository;
 import com.example.artaction.dto.auction.AuctionResponseDto;
 import com.example.artaction.dto.auction.PostAuctionRequestDto;
+import com.example.artaction.exception.auction.NotFoundAuctionException;
 import com.example.artaction.exception.auction.NotSaveAuctionException;
 import com.example.artaction.exception.artwork.NotFoundArtWorkException;
 import com.example.artaction.exception.artwork.NotSaveArtWorkException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,9 +45,11 @@ public class AuctionService {
     @Transactional(readOnly = true)
     public List<AuctionResponseDto> findByArtWork(Long artWorkId) {
         ArtWork artWork = findByArtWorkId(artWorkId);
+        long currentPrice = getCurrentPrice(artWork.getAuction().getId());
+
         return auctionRepository.findByArtWork(artWork)
                 .stream()
-                .map(Auction::from)
+                .map(auction -> auction.from(currentPrice))
                 .toList();
     }
 
@@ -69,6 +73,23 @@ public class AuctionService {
             Auction endAuction = getBuild(auction, auctionStatus, endPrice);
             auctionRepository.save(endAuction);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public AuctionResponseDto findById(Long auctionId) {
+        Auction auction = auctionRepository.findById(auctionId)
+                .orElseThrow(() -> new NotFoundAuctionException("아이디와 일치하는 경매를 찾을수 없습니다"));
+
+        long currentPrice = getCurrentPrice(auctionId);
+        return auction.from(currentPrice);
+    }
+
+
+    @Cacheable(key = "#auctionId", value = "bidPrice")
+    public long getCurrentPrice(Long auctionId) {
+        log.info("호출 확인");
+        Optional<Auction> auctionOptional = auctionRepository.findById(auctionId);
+        return auctionOptional.map(Auction::getCurrentPrice).orElse(0L);
     }
 
     private static Auction getBuild(Auction auction, AuctionStatus status, long price) {
