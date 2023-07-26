@@ -16,7 +16,6 @@ import com.example.artaction.exception.user.NotAuthorizedUserException;
 import com.example.artaction.exception.user.NotFoundUserException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,7 @@ public class BidService {
     private final BidRepository bidRepository;
     private final AuctionRepository auctionRepository;
     private final UserRepository userRepository;
+    private final RedisCacheService redisCacheService;
 
     @Transactional
     public Long Post(PostBidRequestDto requestDto) {
@@ -107,9 +107,7 @@ public class BidService {
         }
     }
 
-    @CachePut(key = "#auctionId", value = "bidPrice")
-    public long updateBidPriceToRedis(Long auctionId, long price) {
-        log.info("Updating bid price for auctionId {} to {}", auctionId, price);
-        return price;
+    public void updateBidPriceToRedis(Long auctionId, long price) {
+        redisCacheService.updateBidPriceToRedis(auctionId, price);
     }
 }
