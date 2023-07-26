@@ -24,7 +24,7 @@ public class ArtWorkController {
         return ResponseEntity.status(HttpStatus.CREATED).body(artWorkService.post(requestDto));
     }
 
-    @PutMapping("/{artWorkId}")
+    @PatchMapping("/{artWorkId}")
     public ResponseEntity<Long> updateArtWork(
             @PathVariable Long artWorkId,
             @Valid @RequestBody UpdateArtWorkRequestDto requestDto) {
