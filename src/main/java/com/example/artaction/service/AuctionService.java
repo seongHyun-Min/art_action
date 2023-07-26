@@ -30,6 +30,7 @@ public class AuctionService {
     private final AuctionRepository auctionRepository;
     private final ArtWorkRepository artWorkRepository;
     private final BidRepository bidRepository;
+    private final RedisCacheService redisCacheService;
 
     @Transactional
     public Long post(PostAuctionRequestDto requestDto) {
@@ -87,9 +88,15 @@ public class AuctionService {
 
     @Cacheable(key = "#auctionId", value = "bidPrice")
     public long getCurrentPrice(Long auctionId) {
-        log.info("호출 확인");
-        Optional<Auction> auctionOptional = auctionRepository.findById(auctionId);
-        return auctionOptional.map(Auction::getCurrentPrice).orElse(0L);
+        long cacheBidPrice = redisCacheService.getCurrentBidPrice(auctionId);
+        if (cacheBidPrice == 0L) {
+            //캐시 값이 없다면 DB 조회후 캐시로 업데이트
+            Optional<Auction> auctionOptional = auctionRepository.findById(auctionId);
+            cacheBidPrice = auctionOptional.map(Auction::getCurrentPrice).orElse(0L);
+            redisCacheService.updateBidPriceToRedis(auctionId, cacheBidPrice);
+        }
+
+        return cacheBidPrice;
     }
 
     private static Auction getBuild(Auction auction, AuctionStatus status, long price) {
